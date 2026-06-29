@@ -459,4 +459,48 @@ export class EvolutionAPI {
   }
 
   async makeVoiceCall(instanceName: string, data: any): Promise<any> {
-    const response = await this.client.post(`/call
+    const response = await this.client.post(`/call/voice/${instanceName}`, data);
+    return response.data;
+  }
+
+  async makeVideoCall(instanceName: string, data: any): Promise<any> {
+    const response = await this.client.post(`/call/video/${instanceName}`, data);
+    return response.data;
+  }
+
+  async acceptCall(instanceName: string, callId: string): Promise<any> {
+    const response = await this.client.post(`/call/accept/${instanceName}`, { callId });
+    return response.data;
+  }
+
+  async endCall(instanceName: string, callId: string): Promise<any> {
+    const response = await this.client.post(`/call/end/${instanceName}`, { callId });
+    return response.data;
+  }
+
+  // Templates API
+  async getTemplates(instanceName: string): Promise<any[]> {
+    const response = await this.client.get(`/template/get/${instanceName}`);
+    return response.data;
+  }
+
+  async createTemplate(instanceName: string, data: any): Promise<any> {
+    const response = await this.client.post(`/template/create/${instanceName}`, data);
+    return response.data;
+  }
+
+  async updateTemplate(instanceName: string, templateId: string, data: any): Promise<any> {
+    const response = await this.client.put(`/template/update/${instanceName}/${templateId}`, data);
+    return response.data;
+  }
+
+  async deleteTemplate(instanceName: string, templateId: string): Promise<any> {
+    const response = await this.client.delete(`/template/delete/${instanceName}/${templateId}`);
+    return response.data;
+  }
+
+  async sendTemplate(instanceName: string, data: any): Promise<any> {
+    const response = await this.client.post(`/template/send/${instanceName}`, data);
+    return response.data;
+  }
+}
