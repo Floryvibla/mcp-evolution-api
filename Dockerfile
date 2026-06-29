@@ -30,7 +30,6 @@ RUN npm ci --only=production
 
 # Copy build artifacts from builder stage
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/.env* ./ 2>/dev/null || true
 
 # Set environment variables
 ENV NODE_ENV=production
