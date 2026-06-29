@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "/Users/flory/Dev/pessoal/mcp-evolution-api/logs/.3b430a216e8f171fd9d3247852354c1803485c16-audit.json",
+    "files": [
+        {
+            "date": 1782703633093,
+            "name": "/Users/flory/Dev/pessoal/mcp-evolution-api/logs/error-2026-06-29.log",
+            "hash": "8f41293023d2d1477b0a77c820f72acc234f94295aac023ff29b5a31781b369a"
+        }
+    ],
+    "hashType": "sha256"
+}
