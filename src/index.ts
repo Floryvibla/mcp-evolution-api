@@ -1039,9 +1039,8 @@ class EvolutionMCPServer {
 
 // Express API server for cloud deployment
 const app = express();
-app.use(express.json());
 
-// Add HTTP logging middleware
+// Add HTTP logging middleware (for all routes)
 app.use((req, res, next) => {
   const start = Date.now();
   res.on("finish", () => {
@@ -1057,6 +1056,10 @@ app.use((req, res, next) => {
   });
   next();
 });
+
+// Apply express.json() ONLY to API routes (not MCP SSE/message routes)
+app.use("/api", express.json());
+app.use("/api/webhook", express.json());
 
 // Import routers
 import { createAPIRouter } from "./routes/api.js";
@@ -1102,8 +1105,11 @@ app.get("/", (_req, res) => {
 // Store active SSE sessions
 const sseSessions = new Map<string, SSEServerTransport>();
 
-// MCP SSE endpoint
-app.get("/mcp/sse", async (_req, res) => {
+// MCP SSE endpoint (at both /mcp and /mcp/sse for compatibility)
+const handleSSEConnection = async (
+  _req: express.Request,
+  res: express.Response,
+) => {
   try {
     const transport = new SSEServerTransport("/mcp/message", res);
     sseSessions.set(transport.sessionId, transport);
@@ -1142,7 +1148,10 @@ app.get("/mcp/sse", async (_req, res) => {
       res.status(500).send("Failed to start SSE session");
     }
   }
-});
+};
+
+app.get("/mcp", handleSSEConnection);
+app.get("/mcp/sse", handleSSEConnection);
 
 // MCP message endpoint
 app.post("/mcp/message", async (req, res) => {
