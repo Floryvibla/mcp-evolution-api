@@ -2,76 +2,85 @@
 
 ## Configuração Atual
 
-- **URL do Servidor MCP:** https://mcp-evolution-api-fixed-production.up.railway.app
-- **URL do Evolution API:** https://evolution-api-evolution-api.dqyvuv.easypanel.host
-- **API Key:** BC10D87095B7-44E2-B1A4-F03BE2BECE24
-- **Instância:** Luis2
-- **Número de teste:** 554198908495
+- **URL do Servidor MCP:** `http://localhost:{MCP_SERVER_PORT}` (ou sua URL de produção)
+- **URL do Evolution API:** (sua URL do Evolution API)
+- **API Key:** (sua API Key)
+- **Instância:** (nome da sua instância)
+- **Número de teste:** (número de teste em formato E.164)
 
 ## Endpoints Disponíveis
 
 ### 1. Informações do Servidor
+
 ```bash
-curl https://mcp-evolution-api-fixed-production.up.railway.app/
+curl http://localhost:{MCP_SERVER_PORT}/
 ```
 
 ### 2. Verificação de Saúde
+
 ```bash
-curl https://mcp-evolution-api-fixed-production.up.railway.app/api/health \
-  -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
+curl http://localhost:{MCP_SERVER_PORT}/api/health \
+  -H "X-API-Key: {SUA_API_KEY}"
 ```
 
 ### 3. Listar Instâncias
+
 ```bash
-curl https://mcp-evolution-api-fixed-production.up.railway.app/api/instances \
-  -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
+curl http://localhost:{MCP_SERVER_PORT}/api/instances \
+  -H "X-API-Key: {SUA_API_KEY}"
 ```
 
 ### 4. Status de uma Instância
+
 ```bash
-curl https://mcp-evolution-api-fixed-production.up.railway.app/api/instances/Luis2/status \
-  -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
+curl http://localhost:{MCP_SERVER_PORT}/api/instances/{NOME_DA_INSTANCIA}/status \
+  -H "X-API-Key: {SUA_API_KEY}"
 ```
 
 ### 5. Enviar Mensagem de Texto
+
 ```bash
-curl -X POST https://mcp-evolution-api-fixed-production.up.railway.app/api/send/text \
+curl -X POST http://localhost:{MCP_SERVER_PORT}/api/send/text \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24" \
+  -H "X-API-Key: {SUA_API_KEY}" \
   -d '{
-    "instanceName": "Luis2",
-    "number": "554198908495",
+    "instanceName": "{NOME_DA_INSTANCIA}",
+    "number": "{NUMERO_DESTINO}",
     "text": "Olá! Esta é uma mensagem de teste"
   }'
 ```
 
 ### 6. Verificar Números de WhatsApp
+
 ```bash
-curl -X POST https://mcp-evolution-api-fixed-production.up.railway.app/api/chat/check-numbers \
+curl -X POST http://localhost:{MCP_SERVER_PORT}/api/chat/check-numbers \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24" \
+  -H "X-API-Key: {SUA_API_KEY}" \
   -d '{
-    "instanceName": "Luis2",
-    "numbers": ["554198908495", "5541999999999"]
+    "instanceName": "{NOME_DA_INSTANCIA}",
+    "numbers": ["{NUMERO_1}", "{NUMERO_2}"]
   }'
 ```
 
 ### 7. Listar Contatos
+
 ```bash
-curl https://mcp-evolution-api-fixed-production.up.railway.app/api/chat/Luis2/contacts \
-  -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
+curl http://localhost:{MCP_SERVER_PORT}/api/chat/{NOME_DA_INSTANCIA}/contacts \
+  -H "X-API-Key: {SUA_API_KEY}"
 ```
 
 ### 8. Listar Grupos
+
 ```bash
-curl https://mcp-evolution-api-fixed-production.up.railway.app/api/groups/Luis2 \
-  -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
+curl http://localhost:{MCP_SERVER_PORT}/api/groups/{NOME_DA_INSTANCIA} \
+  -H "X-API-Key: {SUA_API_KEY}"
 ```
 
 ### 9. Listar Chats
+
 ```bash
-curl https://mcp-evolution-api-fixed-production.up.railway.app/api/chat/Luis2/chats \
-  -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
+curl http://localhost:{MCP_SERVER_PORT}/api/chat/{NOME_DA_INSTANCIA}/chats \
+  -H "X-API-Key: {SUA_API_KEY}"
 ```
 
 ## Solução de Problemas
@@ -93,14 +102,14 @@ curl https://mcp-evolution-api-fixed-production.up.railway.app/api/chat/Luis2/ch
 ### Erro "Access denied"
 
 - Verifique que você está enviando o cabeçalho `X-API-Key` com o valor correto
-- A API Key deve ser: BC10D87095B7-44E2-B1A4-F03BE2BECE24
 
 ### Erro de conexão
 
 1. Verifique que o Evolution API está funcionando:
+
    ```bash
-   curl https://evolution-api-evolution-api.dqyvuv.easypanel.host/instance/fetchInstances \
-     -H "apikey: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
+   curl {SUA_URL_EVOLUTION_API}/instance/fetchInstances \
+     -H "apikey: {SUA_API_KEY}"
    ```
 
 2. Se o Evolution API não responder, o problema está no Easypanel/Coolify
@@ -113,6 +122,7 @@ Há dois scripts de teste disponíveis:
 2. **test-evolution-direct.sh** - Testa diretamente o Evolution API
 
 Para executá-los no Windows, use Git Bash:
+
 ```bash
 bash test-mcp.sh
 bash test-evolution-direct.sh
@@ -121,12 +131,14 @@ bash test-evolution-direct.sh
 ## Deploy com Docker
 
 Você pode fazer deploy usando o Dockerfile incluído:
+
 ```bash
 docker build -t evolution-api-mcp .
 docker run -p 3000:3000 --env-file .env evolution-api-mcp
 ```
 
 Ou usando Docker Compose:
+
 ```bash
 docker-compose up -d
 ```
@@ -136,6 +148,7 @@ docker-compose up -d
 Quando fizer alterações no código:
 
 1. Commit e push para GitHub:
+
    ```bash
    git add .
    git commit -m "Descrição da alteração"
@@ -199,6 +212,7 @@ As seguintes variáveis precisam ser configuradas no seu `.env` ou na plataforma
 ## Contato e Suporte
 
 Para problemas com:
+
 - **Evolution API:** Revise a documentação em https://docs.evolutionfoundation.com.br/evolution-api/
 - **Railway:** https://railway.app/support
 - **Coolify/Easypanel:** Painel de controle da sua instância
