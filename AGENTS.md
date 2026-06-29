@@ -1,24 +1,24 @@
 # Evolution API MCP Server — AGENTS.md
 
-## Overview
+## Visão Geral
 
-This document describes the available tools (endpoints) exposed by the Evolution API MCP Server, along with configuration, usage patterns, and troubleshooting guidance for AI agents.
+Este documento descreve as ferramentas (endpoints) disponíveis expostos pelo Evolution API MCP Server, juntamente com configuração, padrões de uso e orientações de resolução de problemas para agentes AI.
 
-**Authentication:** All requests (except `/`) require the header:
+**Autenticação:** Todas as requisições (exceto `/`) exigem o cabeçalho:
 
 ```
 X-API-Key: <MCP_API_KEY>
 ```
 
-> The server runs on `http://localhost:{MCP_SERVER_PORT}`. Set `MCP_SERVER_PORT` in your `.env`.
+> O servidor roda em `http://localhost:{MCP_SERVER_PORT}`. Configure `MCP_SERVER_PORT` no seu `.env`.
 
 ---
 
-## Available Tools
+## Ferramentas Disponíveis
 
-### `GET /` — Server Info
+### `GET /` — Informações do Servidor
 
-Returns basic information about the MCP server.
+Retorna informações básicas sobre o servidor MCP.
 
 ```bash
 curl http://localhost:{MCP_SERVER_PORT}/
@@ -26,9 +26,9 @@ curl http://localhost:{MCP_SERVER_PORT}/
 
 ---
 
-### `GET /api/health` — Health Check
+### `GET /api/health` — Verificação de Saúde
 
-Returns the health status of the MCP server.
+Retorna o status de saúde do servidor MCP.
 
 ```bash
 curl http://localhost:{MCP_SERVER_PORT}/api/health \
@@ -37,113 +37,123 @@ curl http://localhost:{MCP_SERVER_PORT}/api/health \
 
 ---
 
-### `GET /api/instances` — List Instances
-
-Lists all available WhatsApp instances.
-
-```bash
-curl http://localhost:{MCP_SERVER_PORT}/api/instances \
-  -H "X-API-Key: <MCP_API_KEY>"
-```
-
----
-
-### `GET /api/instances/{instanceName}/status` — Instance Status
-
-Returns the connection status of a specific instance. The instance must be in `open` or `connected` state to send messages.
-
-```bash
-curl http://localhost:{MCP_SERVER_PORT}/api/instances/Luis2/status \
-  -H "X-API-Key: <MCP_API_KEY>"
-```
+### Instâncias (`/api/instances`)
+- `GET /` — Listar instâncias
+- `GET /{instanceName}` — Detalhes de uma instância
+- `POST /` — Criar nova instância
+- `POST /{instanceName}/connect` — Conectar instância
+- `POST /{instanceName}/disconnect` — Desconectar instância
+- `DELETE /{instanceName}` — Excluir instância
+- `POST /{instanceName}/refresh` — Atualizar status
+- `GET /{instanceName}/status` — Status de conexão
+- `POST /{instanceName}/restart` — Reiniciar instância
+- `POST /{instanceName}/logout` — Fazer logout da instância
+- `POST /{instanceName}/presence` — Configurar presença
 
 ---
 
-### `POST /api/send/text` — Send Text Message
-
-Sends a WhatsApp text message to a given number.
-
-**Parameters:**
-| Field | Type | Description |
-|---|---|---|
-| `instanceName` | string | Name of the WhatsApp instance |
-| `number` | string | Recipient number in E.164 format (digits only, no `+`) |
-| `text` | string | Message content |
-
-```bash
-curl -X POST http://localhost:{MCP_SERVER_PORT}/api/send/text \
-  -H "Content-Type: application/json" \
-  -H "X-API-Key: <MCP_API_KEY>" \
-  -d '{
-    "instanceName": "Luis2",
-    "number": "554198908495",
-    "text": "Hola! Este es un mensaje de prueba"
-  }'
-```
-
-> **Number format:** `{country_code}{area_code}{number}` — no spaces, dashes, or leading `+`.
-> Example for Brazil: `554198908495`
+### Mensagens (`/api/send`)
+- `POST /text` — Enviar mensagem de texto
+- `POST /media` — Enviar mídia (imagem, vídeo, áudio, documento)
+- `POST /buttons` — Enviar botões
+- `POST /list` — Enviar lista
+- `POST /location` — Enviar localização
+- `POST /contact` — Enviar contato
+- `POST /reaction` — Enviar reação
 
 ---
 
-### `POST /api/check-numbers` — Check WhatsApp Numbers
-
-Verifies whether one or more phone numbers have an active WhatsApp account.
-
-```bash
-curl -X POST http://localhost:{MCP_SERVER_PORT}/api/check-numbers \
-  -H "Content-Type: application/json" \
-  -H "X-API-Key: <MCP_API_KEY>" \
-  -d '{
-    "instanceName": "Luis2",
-    "numbers": ["554198908495", "5541999999999"]
-  }'
-```
-
----
-
-### `GET /api/instances/{instanceName}/contacts` — List Contacts
-
-Returns the contact list for a given instance.
-
-```bash
-curl http://localhost:{MCP_SERVER_PORT}/api/instances/Luis2/contacts \
-  -H "X-API-Key: <MCP_API_KEY>"
-```
+### Chat (`/api/chat`)
+- `GET /{instanceName}/contacts` — Listar contatos
+- `GET /{instanceName}/chats` — Listar chats
+- `GET /{instanceName}/messages` — Listar mensagens
+- `GET /{instanceName}/status-messages` — Listar status
+- `POST /check-numbers` — Verificar números WhatsApp
+- `POST /{instanceName}/read` — Marcar mensagem como lida
+- `POST /{instanceName}/archive` — Arquivar chat
+- `DELETE /{instanceName}/message` — Excluir mensagem
+- `GET /{instanceName}/profile-picture` — Obter foto de perfil
+- `GET /{instanceName}/business-profile` — Obter perfil empresarial
+- `POST /{instanceName}/base64` — Obter base64 de mídia
 
 ---
 
-### `GET /api/instances/{instanceName}/groups` — List Groups
-
-Returns the WhatsApp groups for a given instance.
-
-```bash
-curl http://localhost:{MCP_SERVER_PORT}/api/instances/Luis2/groups \
-  -H "X-API-Key: <MCP_API_KEY>"
-```
-
----
-
-### `GET /api/instances/{instanceName}/chats` — List Chats
-
-Returns the recent chat list for a given instance.
-
-```bash
-curl http://localhost:{MCP_SERVER_PORT}/api/instances/Luis2/chats \
-  -H "X-API-Key: <MCP_API_KEY>"
-```
+### Grupos (`/api/groups`)
+- `GET /{instanceName}` — Listar grupos
+- `POST /create` — Criar grupo
+- `GET /{instanceName}/participants` — Obter participantes
+- `PUT /{instanceName}/subject` — Atualizar assunto
+- `PUT /{instanceName}/description` — Atualizar descrição
+- `POST /{instanceName}/add-participants` — Adicionar participantes
+- `POST /{instanceName}/remove-participants` — Remover participantes
+- `POST /{instanceName}/promote-participants` — Promover participantes
+- `POST /{instanceName}/demote-participants` — Despromover participantes
+- `POST /{instanceName}/leave` — Sair do grupo
+- `GET /{instanceName}/invite-code` — Obter código de convite
+- `POST /{instanceName}/revoke-invite` — Revogar convite
+- `POST /{instanceName}/accept-invite` — Aceitar convite
 
 ---
 
-## Error Reference
+### Business (`/api/business`)
+- `GET /{instanceName}/profile` — Obter perfil empresarial
+- `PUT /{instanceName}/profile` — Atualizar perfil empresarial
+- `GET /{instanceName}/hours` — Obter horários comerciais
+- `PUT /{instanceName}/hours` — Atualizar horários comerciais
+- `GET /{instanceName}/catalog` — Obter catálogo
+- `POST /{instanceName}/catalog` — Adicionar produto ao catálogo
+- `PUT /{instanceName}/catalog/{productId}` — Atualizar produto
+- `DELETE /{instanceName}/catalog/{productId}` — Excluir produto
 
-| Error                 | Cause                    | Fix                                                        |
+---
+
+### Configurações (`/api/settings`)
+- `GET /{instanceName}` — Obter configurações
+- `PUT /{instanceName}` — Atualizar configurações
+- `PUT /{instanceName}/privacy` — Configurar privacidade
+- `POST /{instanceName}/profile/name` — Atualizar nome de perfil
+- `POST /{instanceName}/profile/picture` — Atualizar foto de perfil
+- `POST /{instanceName}/profile/status` — Atualizar status de perfil
+
+---
+
+### Etiquetas (`/api/labels`)
+- `GET /{instanceName}` — Listar etiquetas
+- `POST /{instanceName}` — Criar etiqueta
+- `PUT /{instanceName}/{labelId}` — Atualizar etiqueta
+- `DELETE /{instanceName}/{labelId}` — Excluir etiqueta
+- `POST /{instanceName}/add-to-chat` — Adicionar etiqueta ao chat
+- `DELETE /{instanceName}/remove-from-chat` — Remover etiqueta do chat
+
+---
+
+### Chamadas (`/api/calls`)
+- `GET /{instanceName}/history` — Obter histórico de chamadas
+- `POST /{instanceName}/voice` — Fazer chamada de voz
+- `POST /{instanceName}/video` — Fazer chamada de vídeo
+- `POST /{instanceName}/accept` — Aceitar chamada
+- `POST /{instanceName}/end` — Encerrar chamada
+
+---
+
+### Templates (`/api/templates`)
+- `GET /{instanceName}` — Listar templates
+- `POST /{instanceName}` — Criar template
+- `PUT /{instanceName}/{templateId}` — Atualizar template
+- `DELETE /{instanceName}/{templateId}` — Excluir template
+- `POST /{instanceName}/send` — Enviar template
+
+---
+
+## Referência de Erros
+
+| Erro                  | Causa                    | Solução                                                    |
 | --------------------- | ------------------------ | ---------------------------------------------------------- |
-| Message not delivered | Instance not connected   | Check instance status; re-scan QR code if needed           |
-| `Access denied`       | Missing or wrong API key | Ensure `X-API-Key` header is present and correct           |
-| Connection error      | Evolution API is down    | Check Easypanel; verify Evolution API directly (see below) |
+| Mensagem não entregue | Instância não conectada  | Verificar status da instância; re-escanear QR se necessário|
+| `Access denied`       | API Key ausente ou errada| Garantir que o cabeçalho `X-API-Key` esteja correto       |
+| Erro de conexão       | Evolution API fora do ar | Verificar Coolify/Easypanel; validar Evolution API diretamente |
 
-**Verify Evolution API directly:**
+**Verificar Evolution API diretamente:**
 
 ```bash
 curl https://evolution-api-evolution-api.dqyvuv.easypanel.host/instance/fetchInstances \
@@ -152,50 +162,61 @@ curl https://evolution-api-evolution-api.dqyvuv.easypanel.host/instance/fetchIns
 
 ---
 
-## Agent Notes
+## Notas para Agentes
 
-- **Always check instance status** before sending messages. Proceed only if status is `open` or `connected`.
-- **Use `check-numbers` before sending** to avoid errors on invalid or non-WhatsApp numbers.
-- **WhatsApp sessions can expire** — if status is not `open`, a new QR code scan is required (human intervention needed).
-- **Rate limits apply** — Evolution API may throttle high-volume sends; do not batch large sends without delays.
-- **Never expose the API key** in public code or logs.
+- **Sempre verifique o status da instância** antes de enviar mensagens. Prossiga apenas se o status for `open` ou `connected`.
+- **Use `check-numbers` antes de enviar** para evitar erros com números inválidos ou sem WhatsApp.
+- **Sessões do WhatsApp podem expirar** — se o status não for `open`, um novo scan de QR é necessário (intervenção humana).
+- **Limites de taxa aplicáveis** — Evolution API pode limitar envios em alta velocidade; não faça lotes grandes sem atrasos.
+- **Nunca exponha a API key** em código público ou logs.
 
 ---
 
-## Environment Variables
+## Variáveis de Ambiente
 
 ```dotenv
-EVOLUTION_API_URL=        # Base URL of your Evolution API instance
-EVOLUTION_API_KEY=        # Evolution API key
-MCP_SERVER_PORT=          # Port the MCP server listens on (e.g. 3000)
+EVOLUTION_API_URL=        # URL base da sua instância Evolution API
+EVOLUTION_API_KEY=        # Chave da Evolution API
+MCP_SERVER_PORT=          # Porta onde o servidor MCP escuta (ex: 3000)
 NODE_ENV=                 # production | development
 ```
 
 ---
 
-## Project Structure
+## Estrutura do Projeto
 
 ```
 evolution-api-mcp-server/
 ├── src/
-│   ├── index.ts                      # Entry point
-│   ├── routes/
-│   │   └── api.ts                    # HTTP API routes
+│   ├── index.ts                      # Ponto de entrada
+│   ├── routes/                      # Rotas organizadas por categoria
+│   │   ├── instance/                # Endpoints de instâncias
+│   │   ├── message/                 # Endpoints de mensagens
+│   │   ├── chat/                    # Endpoints de chat
+│   │   ├── group/                   # Endpoints de grupos
+│   │   ├── business/                # Endpoints empresariais
+│   │   ├── settings/                # Endpoints de configurações
+│   │   ├── label/                   # Endpoints de etiquetas
+│   │   ├── call/                    # Endpoints de chamadas
+│   │   └── template/                # Endpoints de templates
 │   ├── services/
-│   │   ├── evolution-api.ts          # Evolution API client
-│   │   └── template-service.ts       # Template service
+│   │   ├── evolution-api.ts          # Cliente Evolution API
+│   │   ├── instance-manager.ts       # Gerenciador de instâncias
+│   │   └── template-service.ts       # Serviço de templates
+│   ├── utils/
+│   │   └── logger.ts                 # Logger
 │   └── types/
-│       └── evolution.ts              # TypeScript types
+│       └── evolution.ts              # Tipos TypeScript
 ├── package.json
 ├── tsconfig.json
 ├── Dockerfile
-└── .env                              # Local environment variables
+└── .env                              # Variáveis de ambiente locais
 ```
 
 ---
 
-## References
+## Referências
 
-- Evolution API docs: https://doc.evolution-api.com
-- Railway dashboard: https://railway.app
-- Easypanel: your instance control panel
+- Documentação Evolution API: https://docs.evolutionfoundation.com.br/evolution-api/
+- Railway: https://railway.app
+- Coolify: Painel de controle da sua instância

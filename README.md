@@ -1,39 +1,39 @@
-# Evolution API MCP Server - Guía de Uso
+# Evolution API MCP Server - Guia de Uso
 
-## Configuración Actual
+## Configuração Atual
 
-- **URL del Servidor MCP:** https://mcp-evolution-api-fixed-production.up.railway.app
-- **URL de Evolution API:** https://evolution-api-evolution-api.dqyvuv.easypanel.host
+- **URL do Servidor MCP:** https://mcp-evolution-api-fixed-production.up.railway.app
+- **URL do Evolution API:** https://evolution-api-evolution-api.dqyvuv.easypanel.host
 - **API Key:** BC10D87095B7-44E2-B1A4-F03BE2BECE24
-- **Instancia:** Luis2
-- **Número de prueba:** 554198908495
+- **Instância:** Luis2
+- **Número de teste:** 554198908495
 
-## Endpoints Disponibles
+## Endpoints Disponíveis
 
-### 1. Información del Servidor
+### 1. Informações do Servidor
 ```bash
 curl https://mcp-evolution-api-fixed-production.up.railway.app/
 ```
 
-### 2. Estado de Salud
+### 2. Verificação de Saúde
 ```bash
 curl https://mcp-evolution-api-fixed-production.up.railway.app/api/health \
   -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
 ```
 
-### 3. Listar Instancias
+### 3. Listar Instâncias
 ```bash
 curl https://mcp-evolution-api-fixed-production.up.railway.app/api/instances \
   -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
 ```
 
-### 4. Estado de una Instancia
+### 4. Status de uma Instância
 ```bash
 curl https://mcp-evolution-api-fixed-production.up.railway.app/api/instances/Luis2/status \
   -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
 ```
 
-### 5. Enviar Mensaje de Texto
+### 5. Enviar Mensagem de Texto
 ```bash
 curl -X POST https://mcp-evolution-api-fixed-production.up.railway.app/api/send/text \
   -H "Content-Type: application/json" \
@@ -41,13 +41,13 @@ curl -X POST https://mcp-evolution-api-fixed-production.up.railway.app/api/send/
   -d '{
     "instanceName": "Luis2",
     "number": "554198908495",
-    "text": "Hola! Este es un mensaje de prueba"
+    "text": "Olá! Esta é uma mensagem de teste"
   }'
 ```
 
 ### 6. Verificar Números de WhatsApp
 ```bash
-curl -X POST https://mcp-evolution-api-fixed-production.up.railway.app/api/check-numbers \
+curl -X POST https://mcp-evolution-api-fixed-production.up.railway.app/api/chat/check-numbers \
   -H "Content-Type: application/json" \
   -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24" \
   -d '{
@@ -56,128 +56,153 @@ curl -X POST https://mcp-evolution-api-fixed-production.up.railway.app/api/check
   }'
 ```
 
-### 7. Listar Contactos
+### 7. Listar Contatos
 ```bash
-curl https://mcp-evolution-api-fixed-production.up.railway.app/api/instances/Luis2/contacts \
+curl https://mcp-evolution-api-fixed-production.up.railway.app/api/chat/Luis2/contacts \
   -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
 ```
 
 ### 8. Listar Grupos
 ```bash
-curl https://mcp-evolution-api-fixed-production.up.railway.app/api/instances/Luis2/groups \
+curl https://mcp-evolution-api-fixed-production.up.railway.app/api/groups/Luis2 \
   -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
 ```
 
 ### 9. Listar Chats
 ```bash
-curl https://mcp-evolution-api-fixed-production.up.railway.app/api/instances/Luis2/chats \
+curl https://mcp-evolution-api-fixed-production.up.railway.app/api/chat/Luis2/chats \
   -H "X-API-Key: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
 ```
 
-## Solución de Problemas
+## Solução de Problemas
 
-### El mensaje no llega a WhatsApp
+### A mensagem não chega ao WhatsApp
 
-1. **Verificar que la instancia esté conectada:**
-   - La instancia debe tener estado "open" o "connected"
-   - Si no está conectada, necesitas escanear el código QR nuevamente
+1. **Verificar que a instância está conectada:**
+   - A instância deve ter estado "open" ou "connected"
+   - Se não estiver conectada, você precisa escanear o QR code novamente
 
-2. **Formato del número:**
-   - Brasil: 55 + código de área + número (ejemplo: 554198908495)
-   - Sin espacios, guiones o símbolos
-   - Sin el símbolo + al inicio
+2. **Formato do número:**
+   - Brasil: 55 + código de área + número (exemplo: 554198908495)
+   - Sem espaços, traços ou símbolos
+   - Sem o símbolo + no início
 
-3. **Verificar si el número tiene WhatsApp:**
-   - Usa el endpoint `/api/check-numbers` para verificar
+3. **Verificar se o número tem WhatsApp:**
+   - Use o endpoint `/api/chat/check-numbers` para verificar
 
-### Error "Access denied"
+### Erro "Access denied"
 
-- Verifica que estés enviando el header `X-API-Key` con el valor correcto
-- El API Key debe ser: BC10D87095B7-44E2-B1A4-F03BE2BECE24
+- Verifique que você está enviando o cabeçalho `X-API-Key` com o valor correto
+- A API Key deve ser: BC10D87095B7-44E2-B1A4-F03BE2BECE24
 
-### Error de conexión
+### Erro de conexão
 
-1. Verifica que Evolution API esté funcionando:
+1. Verifique que o Evolution API está funcionando:
    ```bash
    curl https://evolution-api-evolution-api.dqyvuv.easypanel.host/instance/fetchInstances \
      -H "apikey: BC10D87095B7-44E2-B1A4-F03BE2BECE24"
    ```
 
-2. Si Evolution API no responde, el problema está en Easypanel
+2. Se o Evolution API não responder, o problema está no Easypanel/Coolify
 
-## Scripts de Prueba
+## Scripts de Teste
 
-Hay dos scripts de prueba disponibles:
+Há dois scripts de teste disponíveis:
 
-1. **test-mcp.sh** - Prueba el servidor MCP
-2. **test-evolution-direct.sh** - Prueba directamente Evolution API
+1. **test-mcp.sh** - Testa o servidor MCP
+2. **test-evolution-direct.sh** - Testa diretamente o Evolution API
 
-Para ejecutarlos en Windows, usa Git Bash:
+Para executá-los no Windows, use Git Bash:
 ```bash
 bash test-mcp.sh
 bash test-evolution-direct.sh
 ```
 
-## Actualización del Código
+## Deploy com Docker
 
-Cuando hagas cambios en el código:
+Você pode fazer deploy usando o Dockerfile incluído:
+```bash
+docker build -t evolution-api-mcp .
+docker run -p 3000:3000 --env-file .env evolution-api-mcp
+```
 
-1. Commit y push a GitHub:
+Ou usando Docker Compose:
+```bash
+docker-compose up -d
+```
+
+## Atualização do Código
+
+Quando fizer alterações no código:
+
+1. Commit e push para GitHub:
    ```bash
    git add .
-   git commit -m "Descripción del cambio"
+   git commit -m "Descrição da alteração"
    git push origin master
    ```
 
-2. Railway detectará automáticamente los cambios y redesplegará
+2. Railway detectará automaticamente as alterações e redeployará
 
-3. Verifica el estado del deployment en Railway:
-   - Ve a https://railway.app
-   - Entra al proyecto "MCP Servers"
-   - Revisa el estado del deployment
+3. Verifique o status do deploy no Railway:
+   - Acesse https://railway.app
+   - Entre no projeto "MCP Servers"
+   - Revise o status do deploy
 
-## Estructura del Proyecto
+## Estrutura do Projeto
 
 ```
 evolution-api-mcp-server/
 ├── src/
-│   ├── index.ts           # Archivo principal
-│   ├── routes/
-│   │   └── api.ts         # Rutas HTTP de la API
+│   ├── index.ts           # Arquivo principal
+│   ├── routes/            # Rotas organizadas por categoria
+│   │   ├── api.ts         # Roteador principal
+│   │   ├── instance/      # Instâncias
+│   │   ├── message/       # Mensagens
+│   │   ├── chat/          # Chat
+│   │   ├── group/         # Grupos
+│   │   ├── business/      # Business
+│   │   ├── settings/      # Configurações
+│   │   ├── label/         # Etiquetas
+│   │   ├── call/          # Chamadas
+│   │   └── template/      # Templates
 │   ├── services/
 │   │   ├── evolution-api.ts  # Cliente de Evolution API
-│   │   └── template-service.ts # Servicio de templates
+│   │   ├── instance-manager.ts # Gerenciador de instâncias
+│   │   └── template-service.ts # Serviço de templates
+│   ├── utils/
+│   │   └── logger.ts      # Logger
 │   └── types/
-│       └── evolution.ts    # Tipos TypeScript
+│       └── evolution.ts   # Tipos TypeScript
 ├── package.json
 ├── tsconfig.json
 ├── Dockerfile
-└── .env                   # Variables de entorno (local)
+└── .env                   # Variáveis de ambiente (local)
 ```
 
-## Variables de Entorno en Railway
+## Variáveis de Ambiente
 
-Las siguientes variables están configuradas en Railway:
+As seguintes variáveis precisam ser configuradas no seu `.env` ou na plataforma de deploy:
 
-- `EVOLUTION_API_URL`: https://evolution-api-evolution-api.dqyvuv.easypanel.host
-- `EVOLUTION_API_KEY`: BC10D87095B7-44E2-B1A4-F03BE2BECE24
-- `MCP_SERVER_PORT`: 3000
-- `NODE_ENV`: production
+- `EVOLUTION_API_URL`: URL base do Evolution API
+- `EVOLUTION_API_KEY`: Chave da Evolution API
+- `MCP_SERVER_PORT`: Porta do servidor MCP (padrão: 3000)
+- `NODE_ENV`: Ambiente (production ou development)
 
 ## Notas Importantes
 
-1. **Seguridad:** Nunca expongas el API Key en código público
-2. **Rate Limiting:** Evolution API puede tener límites de tasa
-3. **Sesión de WhatsApp:** La sesión puede expirar y requerir nuevo escaneo de QR
-4. **Números bloqueados:** WhatsApp puede bloquear números que envían muchos mensajes
+1. **Segurança:** Nunca exponha a API Key em código público
+2. **Limites de taxa:** Evolution API pode ter limites de taxa
+3. **Sessão do WhatsApp:** A sessão pode expirar e exigir novo escaneamento de QR
+4. **Números bloqueados:** WhatsApp pode bloquear números que enviam muitos mensagens
 
-## Contacto y Soporte
+## Contato e Suporte
 
-Para problemas con:
-- **Evolution API:** Revisa la documentación en https://doc.evolution-api.com
+Para problemas com:
+- **Evolution API:** Revise a documentação em https://docs.evolutionfoundation.com.br/evolution-api/
 - **Railway:** https://railway.app/support
-- **Easypanel:** Panel de control de tu instancia
+- **Coolify/Easypanel:** Painel de controle da sua instância
 
 ---
 
-Última actualización: 14 de Septiembre de 2025
+Última atualização: 29 de Junho de 2026
